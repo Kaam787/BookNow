@@ -293,3 +293,9 @@ If you find this project helpful, please consider:
 - 🍴 Forking it for your own projects
 - 📢 Sharing it with others
 - 🤝 Contributing to make it even better!
+
+
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=my_app_db
+MYSQL_USER=user
+MYSQL_PASSWORD=password
