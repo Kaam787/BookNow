@@ -67,6 +67,20 @@ public class Cab {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Override
+    public String toString() {
+        return "Cab{" +
+                "id=" + id +
+                ", driverId=" + (driver != null ? driver.getId() : "null") +
+                ", licensePlate='" + licensePlate + '\'' +
+                ", make='" + make + '\'' +
+                ", model='" + model + '\'' +
+                ", cabType=" + cabType +
+                ", status=" + status +
+                ", seatingCapacity=" + seatingCapacity +
+                '}';
+    }
+
     public enum CabType {
         SEDAN, HATCHBACK, SUV, LUXURY
     }
