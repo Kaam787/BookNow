@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/register", "/api/users/login").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/**").permitAll() // For development, allow all API endpoints
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())); // For H2 console
