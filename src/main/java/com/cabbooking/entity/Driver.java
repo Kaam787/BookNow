@@ -61,6 +61,22 @@ public class Driver {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @Override
+    public String toString() {
+        return "Driver{" +
+                "id=" + id +
+                ", userId=" + (user != null ? user.getId() : "null") +
+                ", licenseNumber='" + licenseNumber + '\'' +
+                ", rating=" + rating +
+                ", totalRides=" + totalRides +
+                ", status=" + status +
+                ", verificationStatus=" + verificationStatus +
+                ", cabId=" + (cab != null ? cab.getId() : "null") +
+                ", currentLatitude=" + currentLatitude +
+                ", currentLongitude=" + currentLongitude +
+                '}';
+    }
+
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

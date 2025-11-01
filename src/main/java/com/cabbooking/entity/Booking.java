@@ -103,6 +103,25 @@ public class Booking {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "id=" + id +
+                ", bookingNumber='" + bookingNumber + '\'' +
+                ", userId=" + (user != null ? user.getId() : "null") +
+                ", driverId=" + (driver != null ? driver.getId() : "null") +
+                ", cabId=" + (cab != null ? cab.getId() : "null") +
+                ", pickupAddress='" + pickupAddress + '\'' +
+                ", dropoffAddress='" + dropoffAddress + '\'' +
+                ", requestedTime=" + requestedTime +
+                ", status=" + status +
+                ", requestedCabType=" + requestedCabType +
+                ", actualFare=" + actualFare +
+                ", paymentStatus=" + paymentStatus +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+
     public enum BookingStatus {
         REQUESTED, ACCEPTED, DRIVER_ASSIGNED, DRIVER_ARRIVED,
         IN_PROGRESS, COMPLETED, CANCELLED
