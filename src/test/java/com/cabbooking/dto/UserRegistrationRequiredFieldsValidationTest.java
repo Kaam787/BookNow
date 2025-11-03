@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -26,27 +27,15 @@ public class UserRegistrationRequiredFieldsValidationTest {
 
     @Test
     void whenRequiredFieldsBlank_thenViolationsForEachRequiredField() {
-        UserRegistrationDto dto = new UserRegistrationDto(
-                "", // firstName blank
-                "", // lastName blank
-                "", // email blank
-                "", // phone blank
-                "", // password blank
-                "CUSTOMER"
+        assertThrows(IllegalArgumentException.class, () ->
+                UserRegistrationDto.builder()
+                        .firstName("")
+                        .lastName("")
+                        .email("")
+                        .phoneNumber("")
+                        .password("")
+                        .role("CUSTOMER")
+                        .build()
         );
-
-        Set<ConstraintViolation<UserRegistrationDto>> violations = validator.validate(dto);
-
-        // Expect at least one violation for each required property
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("firstName")),
-                "Expected violation for blank firstName");
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("lastName")),
-                "Expected violation for blank lastName");
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("email")),
-                "Expected violation for blank email");
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("phoneNumber")),
-                "Expected violation for blank phoneNumber");
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("password")),
-                "Expected violation for blank password");
     }
 }

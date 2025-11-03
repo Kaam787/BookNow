@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -26,33 +27,34 @@ public class UserRegistrationPhoneValidationTest {
 
     @Test
     void whenValidPhone_thenNoPhoneViolation() {
-        UserRegistrationDto dto = new UserRegistrationDto(
-                "Jane",
-                "Doe",
-                "jane.doe@example.com",
-                "0123456789",
-                "password123",
-                "CUSTOMER"
-        );
+        UserRegistrationDto dto = UserRegistrationDto.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane.doe@example.com")
+                .phoneNumber("0123456789")
+                .password("password123")
+                .role("CUSTOMER")
+                .build();
 
         Set<ConstraintViolation<UserRegistrationDto>> violations = validator.validate(dto);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("phoneNumber")),
-                "Expected no phoneNumber violations for a valid 10-digit phone");
+
+        assertTrue(
+                violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("phoneNumber")),
+                "Expected no phoneNumber violations for a valid 10-digit phone"
+        );
     }
 
     @Test
     void whenInvalidPhone_thenPhoneViolation() {
-        UserRegistrationDto dto = new UserRegistrationDto(
-                "Jane",
-                "Doe",
-                "jane.doe@example.com",
-                "12345",
-                "password123",
-                "CUSTOMER"
+        assertThrows(IllegalArgumentException.class, () ->
+                UserRegistrationDto.builder()
+                        .firstName("Jane")
+                        .lastName("Doe")
+                        .email("jane.doe@example.com")
+                        .phoneNumber("12345")
+                        .password("password123")
+                        .role("CUSTOMER")
+                        .build()
         );
-
-        Set<ConstraintViolation<UserRegistrationDto>> violations = validator.validate(dto);
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("phoneNumber")),
-                "Expected a phoneNumber violation for a non-10-digit phone");
     }
 }

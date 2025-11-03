@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -26,33 +27,34 @@ public class UserRegistrationEmailValidationTest {
 
     @Test
     void whenValidEmail_thenNoEmailViolation() {
-        UserRegistrationDto dto = new UserRegistrationDto(
-                "John",
-                "Doe",
-                "john.doe@example.com",
-                "1234567890",
-                "password123",
-                "CUSTOMER"
-        );
+        UserRegistrationDto dto = UserRegistrationDto.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phoneNumber("1234567890")
+                .password("password123")
+                .role("CUSTOMER")
+                .build();
 
         Set<ConstraintViolation<UserRegistrationDto>> violations = validator.validate(dto);
-        assertTrue(violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("email")),
-                "Expected no email violations for a valid email");
+
+        assertTrue(
+                violations.stream().noneMatch(v -> v.getPropertyPath().toString().equals("email")),
+                "Expected no email violations for a valid email"
+        );
     }
 
     @Test
     void whenInvalidEmail_thenEmailViolation() {
-        UserRegistrationDto dto = new UserRegistrationDto(
-                "John",
-                "Doe",
-                "not-an-email",
-                "1234567890",
-                "password123",
-                "CUSTOMER"
+        assertThrows(IllegalArgumentException.class, () ->
+                UserRegistrationDto.builder()
+                        .firstName("John")
+                        .lastName("Doe")
+                        .email("not-an-email")
+                        .phoneNumber("1234567890")
+                        .password("password123")
+                        .role("CUSTOMER")
+                        .build()
         );
-
-        Set<ConstraintViolation<UserRegistrationDto>> violations = validator.validate(dto);
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("email")),
-                "Expected an email violation for an invalid email");
     }
 }

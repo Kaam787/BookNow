@@ -1,6 +1,8 @@
 package com.cabbooking.dto;
 
+import com.cabbooking.util.ObjectValidator;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +17,7 @@ import static com.cabbooking.util.ApplicationConstants.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class BookingRequestDto {
 
     @NotNull(message = "User ID is required")
@@ -58,4 +61,22 @@ public class BookingRequestDto {
 
     @Size(max = MAX_PAYMENT_METHOD_LENGTH, message = "Payment method must be " + MAX_PAYMENT_METHOD_LENGTH + " characters or fewer")
     private String paymentMethod;
+
+    public static class BookingRequestDtoBuilder {
+        public BookingRequestDto build() {
+            BookingRequestDto dto = new BookingRequestDto(
+                    this.userId,
+                    this.pickupAddress,
+                    this.pickupLatitude,
+                    this.pickupLongitude,
+                    this.dropoffAddress,
+                    this.dropoffLatitude,
+                    this.dropoffLongitude,
+                    this.requestedCabType,
+                    this.specialInstructions,
+                    this.paymentMethod
+            );
+            return ObjectValidator.validate(dto);
+        }
+    }
 }

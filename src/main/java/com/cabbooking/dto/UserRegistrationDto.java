@@ -1,6 +1,8 @@
 package com.cabbooking.dto;
 
+import com.cabbooking.util.ObjectValidator;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.Email;
@@ -13,6 +15,7 @@ import static com.cabbooking.util.ApplicationConstants.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class UserRegistrationDto {
 
     @NotBlank(message = "First name is required")
@@ -37,4 +40,17 @@ public class UserRegistrationDto {
     private String password;
 
     private String role = "CUSTOMER";
+
+    public static class UserRegistrationDtoBuilder {
+        public UserRegistrationDto build() {
+            UserRegistrationDto dto = new UserRegistrationDto(
+                    this.firstName,
+                    this.lastName,
+                    this.email,
+                    this.phoneNumber,
+                    this.password,
+                    this.role);
+            return ObjectValidator.validate(dto);
+        }
+    }
 }
