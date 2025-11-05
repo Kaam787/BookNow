@@ -110,6 +110,7 @@ src/
 ### Prerequisites
 - Java 17 or higher
 - Maven 3.6+
+- Docker & Docker Compose
 - IDE (IntelliJ IDEA, Eclipse, or VS Code)
 
 ### Running the Application
@@ -120,22 +121,28 @@ src/
    cd cab-booking-system
    ```
 
-2. **Build the project**
+2. **Start MySQL Database**
+   ```bash
+   cd docker
+   docker-compose up -d mysql
+   ```
+   Or from project root:
+   ```bash
+   docker-compose -f docker/docker-compose.yml up -d mysql
+   ```
+
+3. **Build the project**
    ```bash
    mvn clean install
    ```
 
-3. **Run the application**
+4. **Run the application**
    ```bash
    mvn spring-boot:run
    ```
 
-4. **Access the application**
+5. **Access the application**
    - API Base URL: `http://localhost:8080/cab-booking-api`
-   - H2 Console: `http://localhost:8080/cab-booking-api/h2-console`
-   - JDBC URL: `jdbc:h2:mem:testdb`
-   - Username: `sa`
-   - Password: (leave empty)
 
 ### Running Tests
 ```bash
@@ -161,8 +168,11 @@ mvn test
 ## Configuration
 
 ### Database Configuration
-- **Development**: H2 in-memory database
-- **Production**: MySQL database (configuration in application.properties)
+- **Database**: MySQL 8.0 (via Docker Compose)
+- **Migration**: This project uses [Flyway](https://flywaydb.org/) for database schema version management
+  - Migration scripts are located in `src/main/resources/db/migration/`
+  - Flyway automatically runs migrations on application startup
+  - Schema is created by Flyway, JPA only validates (ddl-auto=validate)
 
 ### Security Configuration
 - JWT-based authentication
