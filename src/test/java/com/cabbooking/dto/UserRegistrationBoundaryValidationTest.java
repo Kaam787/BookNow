@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -27,14 +28,14 @@ public class UserRegistrationBoundaryValidationTest {
     @Test
     void whenFirstNameAtMinAndMaxBounds_thenNoViolation() {
         // min length 1
-        UserRegistrationDto dtoMin = new UserRegistrationDto(
-                "A",
-                "Smith",
-                "a.smith@example.com",
-                "1234567890",
-                "password123",
-                "CUSTOMER"
-        );
+        UserRegistrationDto dtoMin = UserRegistrationDto.builder()
+                .firstName("A")
+                .lastName("Smith")
+                .email("a.smith@example.com")
+                .phoneNumber("1234567890")
+                .password("password123")
+                .role("CUSTOMER")
+                .build();
 
         Set<ConstraintViolation<UserRegistrationDto>> violationsMin = validator.validate(dtoMin);
         assertTrue(violationsMin.stream().noneMatch(v -> v.getPropertyPath().toString().equals("firstName")),
@@ -42,14 +43,14 @@ public class UserRegistrationBoundaryValidationTest {
 
         // max length 50
         String fifty = "A".repeat(50);
-        UserRegistrationDto dtoMax = new UserRegistrationDto(
-                fifty,
-                "Smith",
-                "a.smith@example.com",
-                "1234567890",
-                "password123",
-                "CUSTOMER"
-        );
+        UserRegistrationDto dtoMax = UserRegistrationDto.builder()
+                .firstName(fifty)
+                .lastName("Smith")
+                .email("a.smith@example.com")
+                .phoneNumber("1234567890")
+                .password("password123")
+                .role("CUSTOMER")
+                .build();
 
         Set<ConstraintViolation<UserRegistrationDto>> violationsMax = validator.validate(dtoMax);
         assertTrue(violationsMax.stream().noneMatch(v -> v.getPropertyPath().toString().equals("firstName")),
@@ -61,33 +62,30 @@ public class UserRegistrationBoundaryValidationTest {
         // 51 chars -> should violate
         String fiftyOne = "A".repeat(51);
 
-        UserRegistrationDto dto = new UserRegistrationDto(
-                fiftyOne,
-                "Smith",
-                "a.smith@example.com",
-                "1234567890",
-                "password123",
-                "CUSTOMER"
+        assertThrows(IllegalArgumentException.class, () ->
+                UserRegistrationDto.builder()
+                        .firstName(fiftyOne)
+                        .lastName("Smith")
+                        .email("a.smith@example.com")
+                        .phoneNumber("1234567890")
+                        .password("password123")
+                        .role("CUSTOMER")
+                        .build()
         );
-
-        Set<ConstraintViolation<UserRegistrationDto>> violations = validator.validate(dto);
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("firstName")),
-                "Expected a firstName size violation for length > 50");
     }
+
 
     @Test
     void whenPasswordTooShort_thenViolation() {
-        UserRegistrationDto dto = new UserRegistrationDto(
-                "Bob",
-                "Smith",
-                "bob.smith@example.com",
-                "1234567890",
-                "short",
-                "CUSTOMER"
+        assertThrows(IllegalArgumentException.class, () ->
+                UserRegistrationDto.builder()
+                        .firstName("Bob")
+                        .lastName("Smith")
+                        .email("bob.smith@example.com")
+                        .phoneNumber("1234567890")
+                        .password("short")
+                        .role("CUSTOMER")
+                        .build()
         );
-
-        Set<ConstraintViolation<UserRegistrationDto>> violations = validator.validate(dto);
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("password")),
-                "Expected a password size violation for too-short password");
     }
 }
