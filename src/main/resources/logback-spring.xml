@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}book-now-app.log}"/>
+    <property name="LOG_FILE_MAX_SIZE" value="${LOG_FILE_MAX_SIZE:-10MB}"/>
+    <property name="LOG_FILE_MAX_HISTORY" value="${LOG_FILE_MAX_HISTORY:-30}"/>
+
+    <appender name="FILE_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder class="ch.qos.logback.classic.encoder.JsonEncoder"/>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%kvp %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.cabbooking.service" level="DEBUG"/>
+    <logger name="com.cabbooking.controller" level="DEBUG"/>
+    <logger name="org.springframework.security" level="DEBUG"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.apache.http" level="ERROR"/>
+
+    <springProfile name="prod">
+        <root level="DEBUG">
+            <appender-ref ref="FILE_ROLLING"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+</configuration>
