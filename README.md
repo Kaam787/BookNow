@@ -242,7 +242,7 @@ We love contributions! This project follows the [Contributor Covenant Code of Co
 3. **Set up the development environment**
    ```bash
    mvn clean install
-   mvn spring-boot:run
+   mvn spring-boot:run -Dapp.profiles=dev
    ```
 
 4. **Make your changes and test**
